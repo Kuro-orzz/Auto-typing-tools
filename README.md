@@ -1,7 +1,9 @@
 # Auto-typing-tools
 
+## Requirements:
+- Python 3.13.5
+
 ## Usage:
-- Require python 3.13.5
 
 #### Set up
 ```bash
@@ -19,4 +21,4 @@
 - After open new window, it wail until you ready.
 - If ready, press `F8` key to start auto typing
 
-> ### Note: Do not switch away from the tab while auto typing is running, must focus on that tab while tool is working
+> ### Note: Do not switch away from the tab, must focus on that tab while tool is working
