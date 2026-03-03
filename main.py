@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver import Keys, ActionChains
-import json, os, time, shutil, random, sys
+import json, os, time, shutil, random, sys, argparse
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
@@ -47,26 +47,30 @@ def go_to_typing_frame(driver):
     time.sleep(1)
 
 def auto_typing(driver, keyboard, mn=0.05, mx=0.2):
-    print("START TYPING")
-    keyboard.press(Key.space)
-    keyboard.release(Key.space)
-    time.sleep(4)
+    try:
+        print("START TYPING")
+        keyboard.press(Key.space)
+        keyboard.release(Key.space)
+        time.sleep(4)
     
-    while True:
-        span_tag = driver.find_elements(
-            By.XPATH,
-            "//div[@id='sentenceText']//span"
-        )
-        if len(span_tag) != 2: break
-        else: target = span_tag[1]
-        print(target.text)
-        for character in target.text:
-            keyboard.press(character)
-            keyboard.release(character)
-            delay = random.uniform(mn, mx)
-            print(delay)
-            time.sleep(delay)
-        time.sleep(0.4)
+        while True:
+            span_tag = driver.find_elements(
+                By.XPATH,
+                "//div[@id='sentenceText']//span"
+            )
+            if len(span_tag) != 2: break
+            else: target = span_tag[1]
+            print(target.text)
+            for character in target.text:
+                keyboard.press(character)
+                keyboard.release(character)
+                delay = random.uniform(mn, mx)
+                print(delay)
+                time.sleep(delay)
+            time.sleep(0.4)
+    except Exception as E:
+        print(E)
+        sys.exit(-1)
 
 def main(mn, mx):
     driver = webdriver.Chrome(options=chrome_options)
@@ -83,12 +87,15 @@ def main(mn, mx):
 
 if __name__ == '__main__':
 
-    mn, mx = 0.1, 0.2
+    parser = argparse.ArgumentParser(description='Auto typing tools')
+    parser.add_argument('--min-delay', type=float,
+                        help='Min time delay between press key')
+    parser.add_argument('--max-delay', type=float,
+                        help='Max time delay between press key')
+    args = parser.parse_args()
 
-    if len(sys.argv) == 3:
-        mn = sys.argv[1]
-        mx = sys.argv[2]
+    mn, mx = 0.1, 0.2 # Default
+    if args.min_delay: mn = args.min_delay
+    if args.max_delay: mx = args.max_delay
 
     main(mn, mx)
-
-    
