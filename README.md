@@ -6,16 +6,20 @@
 ## Usage:
 
 #### Set up
+
+- Open cmd
+
 ```bash
   git clone https://github.com/Kuro-orzz/Auto-typing-tools.git
   cd Auto-typing-tools
   python -m venv venv
+  venv\Scripts\activate.bat
   pip install -r requirements.txt
 ```
 
 #### Run script
 ```bash
-  python main.py --min-delay [min delay] --max-delay [max delay]
+  python main.py
 ```
 
 - After open new window, it wail until you ready.
