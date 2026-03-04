@@ -54,14 +54,13 @@ def go_to_typing_frame(driver):
     driver.get(TYPING_URL)
     typing = WebDriverWait(driver, TIMEOUT).until(EC.element_to_be_clickable((By.ID, "start_btn")))
     ActionChains(driver).click(typing).perform()
-    time.sleep(1)
 
 def auto_typing(driver, keyboard, mn=0.05, mx=0.2):
     try:
         print("START TYPING")
         keyboard.press(Key.space)
         keyboard.release(Key.space)
-        time.sleep(4)
+        time.sleep(3)
     
         listener = Listener(on_press=on_press_key, on_release=on_release_key)
         listener.start()
@@ -104,15 +103,12 @@ def auto_typing(driver, keyboard, mn=0.05, mx=0.2):
                 """)
                 keyboard.press(character)
                 keyboard.release(character)
-                delay = random.uniform(mn, mx)
-                print(delay)
-                # time.sleep(delay)
-            time.sleep(0.4)
+            time.sleep(0.5)
     except Exception as E:
         print(E)
         sys.exit(-1)
 
-def main(mn, mx):
+def main():
     driver = webdriver.Chrome(options=chrome_options)
     keyboard = Controller()
 
@@ -120,22 +116,11 @@ def main(mn, mx):
     # Wait until press f8 to start
     with Listener(on_press=on_press, on_release=on_release) as listener: # type: ignore
         listener.join()
-    auto_typing(driver, keyboard, mn, mx)
-    time.sleep(60)
+    auto_typing(driver, keyboard)
+    time.sleep(9999)
 
     driver.quit()
 
 if __name__ == '__main__':
 
-    parser = argparse.ArgumentParser(description='Auto typing tools')
-    parser.add_argument('--min-delay', type=float,
-                        help='Min time delay between press key')
-    parser.add_argument('--max-delay', type=float,
-                        help='Max time delay between press key')
-    args = parser.parse_args()
-
-    mn, mx = 0.1, 0.2 # Default
-    if args.min_delay: mn = args.min_delay
-    if args.max_delay: mx = args.max_delay
-
-    main(mn, mx)
+    main()
