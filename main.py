@@ -28,7 +28,9 @@ chrome_options.add_experimental_option('useAutomationExtension', False)
 
 URL = 'https://www.e-typing.ne.jp/roma/check/'
 TYPING_URL = 'https://www.e-typing.ne.jp/app/jsa_std/typing.asp?t=trysc.trysc.trysc.std.0&u=&s=0'
-TIMEOUT = 5
+TIMEOUT = 10
+key_pressed = False
+
 
 def on_press(key):
     if key == Key.f8:
@@ -39,6 +41,14 @@ def on_release(key):
     if key == Key.f8:
         return False
     return True
+
+def on_press_key(key):
+    global key_pressed
+    key_pressed = True
+
+def on_release_key(key):
+    global key_pressed
+    key_pressed = False
 
 def go_to_typing_frame(driver):
     driver.get(TYPING_URL)
@@ -53,6 +63,9 @@ def auto_typing(driver, keyboard, mn=0.05, mx=0.2):
         keyboard.release(Key.space)
         time.sleep(4)
     
+        listener = Listener(on_press=on_press_key, on_release=on_release_key)
+        listener.start()
+
         while True:
             span_tag = driver.find_elements(
                 By.XPATH,
@@ -62,11 +75,38 @@ def auto_typing(driver, keyboard, mn=0.05, mx=0.2):
             else: target = span_tag[1]
             print(target.text)
             for character in target.text:
+                driver.execute_script("""
+                    if (!window.customKeyHandler) {
+                        window.customKeyHandler = function(e) {
+                            e.preventDefault();
+                            e.stopImmediatePropagation();
+                            const newEvent = new KeyboardEvent(e.type, {
+                                key: e.key,
+                                code: e.code,
+                                bubbles: true
+                            });
+                            document.dispatchEvent(newEvent);
+                        };
+                        ['keydown','keypress','keyup'].forEach(type => {
+                            window.addEventListener(type, window.customKeyHandler, true);
+                        });
+                    }
+                """)
+                while True:
+                    if key_pressed: break
+                driver.execute_script("""
+                    if (window.customKeyHandler) {
+                        ['keydown','keypress','keyup'].forEach(type => {
+                            window.removeEventListener(type, window.customKeyHandler, true);
+                        });
+                        window.customKeyHandler = null;
+                    }
+                """)
                 keyboard.press(character)
                 keyboard.release(character)
                 delay = random.uniform(mn, mx)
                 print(delay)
-                time.sleep(delay)
+                # time.sleep(delay)
             time.sleep(0.4)
     except Exception as E:
         print(E)
