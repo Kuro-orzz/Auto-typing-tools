@@ -19,13 +19,12 @@
 
 #### Run script
 ```bash
-  python main.py
+  python main.py <your_username> <your_stupid_password>
 ```
 
-- After open new window, it wail until you ready.
+- After open new window, it will login using your credential.
+- Wait until finish login and redirect to typing page.
 - If ready, press `F8` key to start auto typing
-
-> ### Note: Do not switch away from the tab, must focus on that tab while tool is working
 
 ## New features:
 
@@ -33,4 +32,4 @@
  
 Note: So with this new feature, you don't need to care even if sensei watching you typing =))) 
 
-![image](https://github.com/Kuro-orzz/Auto-typing-tools/blob/master/Just_in_case.jpg)
+![image](Just_in_case.jpg)
